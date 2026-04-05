@@ -52,7 +52,13 @@ export default function ChatInterface({ userName, onLogout }: ChatInterfaceProps
     setIsLoading(true);
 
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
+      const apiKey = import.meta.env.VITE_GEMINI_API_KEY || (typeof process !== 'undefined' ? process.env.GEMINI_API_KEY : '');
+      
+      if (!apiKey) {
+        throw new Error("API Key is missing. Please check your environment variables.");
+      }
+
+      const ai = new GoogleGenAI({ apiKey });
       
       // Prepare history for the chat
       const history = messages.map(msg => ({
